@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ps")]
+[assembly: AssemblyTitle("ConsoleApplication4")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PhysicalSimulations")]
+[assembly: AssemblyProduct("ConsoleApplication4")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b0ded70a-9347-4f9b-a26f-85db6071cb9f")]
+[assembly: Guid("ed243cc4-0657-4624-b03a-68324106fdd3")]
 
 // Version information for an assembly consists of the following four values:
 //
