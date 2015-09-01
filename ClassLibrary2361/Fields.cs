@@ -48,15 +48,16 @@ namespace ClassLibrary2361
             Hs = new Thread[n];
             WaiterA = new EventWaitHandle[n];
             WaiterK = new EventWaitHandle[n];
-            for (int i = 0; i < n; i++)
+            for (int ThreadIterator = 0; ThreadIterator < n; ThreadIterator++)
             {
-                if (Hs[i] != null) Hs[i].Join();
-                WaiterA[i] = new AutoResetEvent(false);
-                WaiterK[i] = new AutoResetEvent(false);
-                int Start = (int)Math.Round((i * (double)Bloops.Count() / n));
-                int End = (int)Math.Round(((i + 1) * (double)Bloops.Count() / n));
-                Hs[i] = new Thread(() => SimulateBloops(Start, End, i));
-                Hs[i].Start();
+                if (Hs[ThreadIterator] != null) Hs[ThreadIterator].Join();
+                WaiterA[ThreadIterator] = new AutoResetEvent(false);
+                WaiterK[ThreadIterator] = new AutoResetEvent(false);
+                int Start = (int)Math.Round((ThreadIterator * (double)Bloops.Count() / n));
+                int End = (int)Math.Round(((ThreadIterator + 1) * (double)Bloops.Count() / n));
+                Hs[ThreadIterator] = new Thread(() => SimulateBloops(Start, End, ThreadIterator));
+                Hs[ThreadIterator].Start();
+                while (Hs[ThreadIterator].ThreadState != ThreadState.WaitSleepJoin) ;
             }
             ThreadsHaveBeenSet = true;
         }
