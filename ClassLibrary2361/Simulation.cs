@@ -92,7 +92,7 @@ namespace ClassLibrary2361
 
             FieldSet NewFieldSet = null;
             DateTime Now = DateTime.UtcNow;
-            if ((GenerationCount % 8) == 0)
+            if ((GenerationCount % 5) == 0)
             {
                 NewFieldSet = NewGeneration(Olds, Now);
             }
@@ -109,24 +109,30 @@ namespace ClassLibrary2361
         private FieldSet NewGeneration(IEnumerable<BleepyBloop> Olds, DateTime Now)
         {
             FieldSet NewFieldSet;
-            int i = 0;
+
             PrintSpeeds(Olds, Now);
             if (f)
             {
-                foreach (BleepyBloop B in Olds.OrderByDescending(j => j.ObjectiveFunction()))
-                {
-                    Console.Write(B.ObjectiveFunction().ToString("00000.0") + "\t");
-                    XmlSerializer x = new XmlSerializer(typeof(Instruction[]));
-                    TextWriter w = new StreamWriter(@"C:\Users\Admin\Documents\Cout\" + "b_" + B.ObjectiveFunction().ToString("0000") + "_" + i.ToString() + ".xml");
-                    i++;
-                    x.Serialize(w, B.Genes);
-                    w.Close();
-                }
+                SerializeBloops(Olds);
             }
             NewFieldSet = FieldSet.NewField(Olds.ToArray());
-
             Turnip = NewFieldSet;
             return NewFieldSet;
+        }
+
+        private static void SerializeBloops(IEnumerable<BleepyBloop> Olds)
+        {
+            int i = 0;
+            foreach (BleepyBloop B in Olds.OrderByDescending(j => j.ObjectiveFunction()))
+            {
+
+                Console.Write(B.ObjectiveFunction().ToString("00000.0") + "\t");
+                XmlSerializer x = new XmlSerializer(typeof(Instruction[]));
+                TextWriter w = new StreamWriter(@"C:\Users\Admin\Documents\Cout\" + "b_" + B.ObjectiveFunction().ToString("0000") + "_" + i.ToString() + ".xml");
+                i++;
+                x.Serialize(w, B.Genes);
+                w.Close();
+            }
         }
 
         private void PrintSpeeds(IEnumerable<BleepyBloop> Olds, DateTime Now)
@@ -140,8 +146,13 @@ namespace ClassLibrary2361
         public void init(int NumberOfBlips,bool F)
         {
             f = F;
-            Turnip = FieldSet.NewField(32);
+            Turnip = FieldSet.NewField(NumberOfBlips);
             LastFinish = DateTime.UtcNow;
+        }
+
+        public void WriteGeneration()
+        {
+
         }
     }
 }

@@ -7,7 +7,7 @@ using PhysicalSimulations;
 using ThinkingClassLibary;
 namespace ClassLibrary2361
 {
-    public class Food : IPhysical<Vector2d>
+    public class Poison : IPhysical<Vector2d>
     {
         /// <summary>
         /// Log natural distributed - average of 15, +- 1 stdev -> 1.5 : 150
@@ -18,19 +18,21 @@ namespace ClassLibrary2361
         {
             get
             {
-                return (new ColourVector(1d, 0d, 0d, 0d));
+                return (new ColourVector(0d, 0d, 0d, 1d));
             }
         }
 
-        public Food()
+        public Poison()
         {
-            Size = Math.Pow(10, 1.176 + BetterRandom.StdDev(0.3d)); //random normal(mean,stdDev^2)
+            Size = Math.Pow(10, 1.176 + BetterRandom.StdDev(0.3d))/2; //random normal(mean,stdDev^2)
             GenerateRandomPosition();
         }
 
         private void GenerateRandomPosition()
         {
-            Position = Vector2d.GenerateRandomPosition();
+            double Theta = BetterRandom.NextDouble() * Math.PI * 2;
+            double Radius = BetterRandom.StdDev(60);
+            Position = new Vector2d(Math.Sin(Theta)*Radius+50, Math.Cos(Theta) * Radius+50);
         }
     }
 }

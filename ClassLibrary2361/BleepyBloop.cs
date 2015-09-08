@@ -57,6 +57,20 @@ namespace ClassLibrary2361
                 G = value.ToArray();
             }
         }
+
+        public double Food
+        {
+            get
+            {
+                return food;
+            }
+
+            set
+            {
+                food = value;
+            }
+        }
+
         public Instruction[] G;
 
         public double Rotation;
@@ -70,7 +84,22 @@ namespace ClassLibrary2361
                 (0.4 * LeftRight * Math.Sin(Rotation))));
         }
 
-        public double Food;
+        private double food=15;
+        public double Poison = -1;
+        public double MoveSpeed
+        {
+            get
+            {
+                if (Poison < 0)
+                {
+                    return 0.4;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
 
         public double[] Inputs;
         public enum IAL : int
@@ -99,7 +128,7 @@ namespace ClassLibrary2361
         }
         public static int InputSize = 24;
         public double[] Memory;
-        public static int MemSize = 256;
+        public static int MemSize = 512;
         public double[] Outputs;
         public static int OutputSize = 14;
         public enum OAL:int
@@ -182,23 +211,28 @@ namespace ClassLibrary2361
 
         public BleepyBloop()
         {
+            InitVars();
             Position = new Vector2d(BetterRandom.NextDouble() * 64, BetterRandom.NextDouble() * 64);
-            Memory = new double[MemSize];
-            Buffet = new MemoryBuffet[NumMemBuffet];
-            for(int i=0;i<Buffet.Count();i++)
-            {
-                Buffet[i] = new MemoryBuffet(MemBufSize);
-            }
-            Inputs = new double[BleepyBloop.InputSize];
-            Outputs = new double[BleepyBloop.OutputSize];
-            L = new ColourVector();
-            R = new ColourVector();
-            F = new ColourVector();
-            G = new Instruction[MemSize];
             for (int e = 0; e < MemSize; e++)
             {
                 G[e] = new Instruction(MemSize);
             }
+        }
+
+        private void InitVars()
+        {
+            Memory = new double[MemSize];
+            Buffet = new MemoryBuffet[NumMemBuffet];
+            for (int i = 0; i < Buffet.Count(); i++)
+            {
+                Buffet[i] = new MemoryBuffet(MemBufSize);
+            }
+            Inputs = new double[InputSize];
+            Outputs = new double[OutputSize];
+            L = new ColourVector();
+            R = new ColourVector();
+            F = new ColourVector();
+            G = new Instruction[MemSize];
         }
     }
 }

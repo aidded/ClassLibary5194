@@ -58,6 +58,8 @@ namespace Example
             InitGraphics(game);
             RenderBloops();
             RenderFood();
+            RenderRocks();
+            RenderPoison();
             game.SwapBuffers();
         }
 
@@ -76,15 +78,43 @@ namespace Example
             {
                 GL.Begin(PrimitiveType.Points);
                 GL.Color3(Color.Orange);
-                GL.Vertex2(V.AtFrame[V.AtFrame.Count - 1].Position.x, V.AtFrame[V.AtFrame.Count - 1].Position.y);
+                BleepyBloop B = V.AtFrame[V.AtFrame.Count - 1];
+                double x = B.Position.x;
+                double y = B.Position.y;
+                double sr = B.Rotation + (Math.PI / 6);
+                GL.Vertex2(x, y);
                 GL.End();
+                double R1 = DrawBloopBoundaries(x, y, sr);
+                DrawBloopSizeIndicator(B, x, y, sr, R1);
+            }
+        }
+
+        private static double DrawBloopBoundaries(double x, double y, double sr)
+        {
+            GL.Begin(PrimitiveType.LineLoop);
+            const double R1 = 0.2;
+            for (double r = sr; r < sr + 7; r += R1)
+            {
+                GL.Vertex2(x +
+                    0.7 * Math.Sin(r),
+                    y +
+                    0.7 * Math.Cos(r));
+            }
+            GL.End();
+            return R1;
+        }
+
+        private static void DrawBloopSizeIndicator(BleepyBloop B, double x, double y, double sr, double R1)
+        {
+            for (double i = 0; i < Math.PI; i += Math.PI / 3)
+            {
                 GL.Begin(PrimitiveType.LineLoop);
-                for (double r = 0; r < 7; r += 0.5)
+                for (double r = sr + (i * 2); r < sr + (i * 2 + Math.PI / 3); r += R1)
                 {
-                    GL.Vertex2(V.AtFrame[V.AtFrame.Count - 1].Position.x +
-                        (Math.Sqrt(V.AtFrame[V.AtFrame.Count - 1].Food) / 7d + 0.5) * Math.Sin(r),
-                        V.AtFrame[V.AtFrame.Count - 1].Position.y +
-                        (Math.Sqrt(V.AtFrame[V.AtFrame.Count - 1].Food) / 7d + 0.5) * Math.Cos(r));
+                    GL.Vertex2(x +
+                        (Math.Sqrt(B.Food) / 7d + 0.5) * Math.Sin(r),
+                        y +
+                        (Math.Sqrt(B.Food) / 7d + 0.5) * Math.Cos(r));
                 }
                 GL.End();
             }
@@ -110,9 +140,45 @@ namespace Example
             }
         }
 
+        private static void RenderPoison()
+        {
+            foreach (Poison V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].Poisons)
+            {
+                if (V.Size != 0)
+                {
+                    GL.Begin(PrimitiveType.Points);
+                    GL.Color3(Color.CornflowerBlue);
+                    GL.Vertex2(V.Position.x, V.Position.y);
+                    GL.End();
+                    GL.Begin(PrimitiveType.LineLoop);
+                    for (double r = 0; r < 7; r += 0.5)
+                    {
+                        GL.Vertex2(V.Position.x + Math.Sqrt(V.Size / 15d) * Math.Sin(r), V.Position.y + Math.Sqrt(V.Size / 15d) * Math.Cos(r));
+                    }
+                    GL.End();
+                }
+            }
+        }
+        private static void RenderRocks()
+        {
+            foreach (Rock V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].Rocks)
+            {
+                GL.Begin(PrimitiveType.Points);
+                GL.Color3(Color.LightGray);
+                GL.Vertex2(V.Position.x, V.Position.y);
+                GL.End();
+                GL.Begin(PrimitiveType.LineLoop);
+                for (double r = 0; r < 7; r += 0.5)
+                {
+                    GL.Vertex2(V.Position.x + 1 * Math.Sin(r), V.Position.y + 1 * Math.Cos(r));
+                }
+                GL.End();
+            }
+        }
+
         private static void UpdateSimu()
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 2;i ++)
             {
                 if (CV.Step(Pancake)) Pancake++;
             }

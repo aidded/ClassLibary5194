@@ -1,28 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using PhysicalSimulations;
 using ThinkingClassLibary;
+using System.Xml.Serialization;
 namespace ClassLibrary2361
 {
     public class Field : Generational
     {
         public static int NumThread;
-        const int NF = 35000;
+        const int NF = 4500;
         bool ThreadsHaveBeenSet;
         bool End = false;
         public InTime<BleepyBloop>[] Bloops;
         public List<Food> Foods;
+        public List<Rock> Rocks;
+        public List<Poison> Poisons;
         public int FrameValid;
         Thread[] Hs;
+        [XmlIgnore]
         public List<IPhysical<Vector2d>> ThingsCache;
+
+        [XmlIgnore]
         EventWaitHandle[] WaiterK;
 
         public Field(int NumberOfBloops)
         {
+            Rocks = new List<Rock>();
+            double s = 80;
+            for (double r = 0;r<(Math.PI*2);r+=0.024)
+            {
+                Rocks.Add(new Rock((Math.Sin(r) * s) + 50, (Math.Cos(r) * s) + 50));
+            }
+            for(int i = 0;i<64;i++)
+            {
+                Rocks.Add(new Rock());
+            }
         }
 
         public int Frame
@@ -70,6 +84,7 @@ namespace ClassLibrary2361
             }
         }
 
+        [XmlIgnore]
         public EventWaitHandle[] WaiterA
         {
             get
@@ -82,12 +97,14 @@ namespace ClassLibrary2361
                 waitera = value;
             }
         }
+
+        [XmlIgnore]
         EventWaitHandle[] waitera;
 
         public static Field GenerateNewLevel(BleepyBloop[] Olds)
         {
             Field F = InitNewFieldWithOldBleeps(Olds);
-            AddNewFood(F, 16);
+            AddNewFoodAndPoison(F, 48);
             UpdateThingChache(F);
 
             F.SetThreads(NumThread);
@@ -102,16 +119,25 @@ namespace ClassLibrary2361
             {
                 J.Add(B);
             }
+            foreach (Poison B in F.Poisons)
+            {
+                J.Add(B);
+            }
             F.ThingsCache = J;
             F.FrameValid = F.Frame;
         }
 
-        public static void AddNewFood(Field F, int n)
+        public static void AddNewFoodAndPoison(Field F, int n)
         {
             for (int i = 0; i < n; i++)
             {
                 F.Foods.Add(new Food());
                 F.Foods[i] = new Food();
+            }
+            for (int i = 0; i < n; i++)
+            {
+                F.Poisons.Add(new Poison());
+                F.Poisons[i] = new Poison();
             }
         }
 
@@ -120,6 +146,7 @@ namespace ClassLibrary2361
             Field F = new Field(Olds.Count());
             F.Bloops = new InTime<BleepyBloop>[Olds.Count()];
             F.Foods = new List<Food>();
+            F.Poisons = new List<Poison>();
             for (int i = 0; i < Olds.Count(); i++)
             {
                 F.Bloops[i] = new InTime<BleepyBloop>();
@@ -153,12 +180,15 @@ namespace ClassLibrary2361
             for (int i = 0; i < Bloops.Count(); i++)
             {
                 BleepyBloop h = Bloops[i].AtFrame[Frame];
-                double T = 0.4 * ThinkingClassLibary.Clamper.clamp(h.Outputs[(int)BleepyBloop.OAL.OutThrustL] + h.Outputs[(int)BleepyBloop.OAL.OutThrustR]);
+                double V = h.MoveSpeed;
+                var LThrust = Clamper.clamp(h.Outputs[(int)BleepyBloop.OAL.OutThrustL]);
+                var RThrust = Clamper.clamp(h.Outputs[(int)BleepyBloop.OAL.OutThrustR]);
+                double T = V * (LThrust + RThrust);
                 h.pos.x += T * Math.Sin(h.Rotation);
                 h.pos.y += T * Math.Cos(h.Rotation);
                 if (double.IsNaN(h.pos.x)) Console.Beep();
                 if (double.IsNaN(h.pos.y)) Console.Beep();
-                h.Rotation += (ThinkingClassLibary.Clamper.clamp(h.Outputs[(int)BleepyBloop.OAL.OutThrustR]) - ThinkingClassLibary.Clamper.clamp(h.Outputs[(int)BleepyBloop.OAL.OutThrustL])) / 5d;
+                h.Rotation += (RThrust - LThrust) / 5d;
             }
 
         }
@@ -287,17 +317,34 @@ namespace ClassLibrary2361
             {
                 ColideCollisions(Frame, i);
                 EatAvailibleFood(Frame, i);
+                RemovePoison(Frame, i);
+                EatAvailiblePoison(Frame, i);
             }
 
             //create new food
 
-            int PoisonVariable = Field.PoisonVariable(0.03);
+            int PoisonVariable = Field.PoisonVariable(0.01);
             for (int i = 0; i < PoisonVariable; i++)
             {
                 InTime<Food> tmp = new InTime<Food>();
                 Foods.Add(new Food());
             }
 
+            PoisonVariable = Field.PoisonVariable(0.015);
+            for (int i = 0; i < PoisonVariable; i++)
+            {
+                InTime<Poison> tmp = new InTime<Poison>();
+                Poisons.Add(new Poison());
+            }
+
+        }
+
+        private void RemovePoison(int Frame, int i)
+        {
+            if (Bloops[i].AtFrame[Frame].Poison > 0)
+            {
+                Bloops[i].AtFrame[Frame].Poison -= 0.4;
+            }
         }
 
         private void EatAvailibleFood(int Frame, int i)
@@ -312,6 +359,26 @@ namespace ClassLibrary2361
                         {
                             Bloops[i].AtFrame[Frame].Food += Foods[oo].Size;
                             Foods[oo].Size = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void EatAvailiblePoison(int Frame, int i)
+        {
+            for (int oo = 0; oo < Poisons.Count(); oo++)
+            {
+                var LocalBloop = Bloops[i].AtFrame[Frame];
+                if (Math.Abs(LocalBloop.Position.x - Poisons[oo].Position.x) < 1.5d)
+                {
+                    if (Math.Abs(LocalBloop.Position.y - Poisons[oo].Position.y) < 1.5d)
+                    {
+                        if ((LocalBloop.Position - Poisons[oo].Position).absolute < 1.5)
+                        {
+                            LocalBloop.Food = Math.Max(LocalBloop.Food - Poisons[oo].Size,0);
+                            LocalBloop.Poison += Poisons[oo].Size;
+                            Poisons[oo].Size = 0;
                         }
                     }
                 }
@@ -335,6 +402,17 @@ namespace ClassLibrary2361
                     }
                 }
             }
+            foreach (Rock r in Rocks)
+            {
+                if (Math.Abs(Bloops[i].AtFrame[Frame].Position.x - r.Position.x) < 2d)
+                {
+                    if (Math.Abs(Bloops[i].AtFrame[Frame].Position.y - r.Position.y) < 2d)
+                    {
+                        Vector2d Diff = Bloops[i].AtFrame[Frame].pos - r.Position;
+                        Bloops[i].AtFrame[Frame].pos -= -1d * Diff;
+                    }
+                }
+            }
         }
 
         private static int PoisonVariable(double Lambda)
@@ -355,7 +433,7 @@ namespace ClassLibrary2361
         public override bool Step()
         {
             //NullCheck(Frame);
-            if ((Frame % 2) == 0)
+            if ((Frame % 4) == 0)
             {
                 MoveFromPhyToBrain(Frame);
             }
@@ -385,21 +463,31 @@ namespace ClassLibrary2361
         {
             if (Frame != FrameValid)
             {
-                List<IPhysical<Vector2d>> J = new List<IPhysical<Vector2d>>();
-                J.AddRange(Bloops.Select(R => R.AtFrame[Frame]));
-                foreach (Food F in Foods)
-                {
-                    if (F.Size > 0)
-                    {
-                        J.Add(F);
-                    }
-                }
-                ThingsCache = J;
-                FrameValid = Frame;
+                UpdateThingCache(Frame);
             }
-                return ThingsCache;
+            return ThingsCache;
             
         }
+
+        private void UpdateThingCache(int Frame)
+        {
+            List<IPhysical<Vector2d>> J = new List<IPhysical<Vector2d>>();
+            J.AddRange(Bloops.Select(R => R.AtFrame[Frame]));
+            foreach (Food F in Foods)
+            {
+                if (F.Size > 0)
+                {
+                    J.Add(F);
+                }
+            }
+            foreach (Rock R in Rocks)
+            {
+                J.Add(R);
+            }
+            ThingsCache = J;
+            FrameValid = Frame;
+        }
+
         private static InTime<BleepyBloop>[] GenerateNewGeneration(LifeForm[] Olds)
         {
             InTime<BleepyBloop>[] F = new InTime<BleepyBloop>[Olds.Count()];
@@ -416,6 +504,10 @@ namespace ClassLibrary2361
                 F[i].AtFrame[0].Vary(0.08, 0.08);
             }
             return F;
+        }
+
+        public Field ()
+        {
         }
     }
 }

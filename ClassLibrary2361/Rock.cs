@@ -7,24 +7,29 @@ using PhysicalSimulations;
 using ThinkingClassLibary;
 namespace ClassLibrary2361
 {
-    public class Food : IPhysical<Vector2d>
+    public class Rock : IPhysical<Vector2d>
     {
-        /// <summary>
-        /// Log natural distributed - average of 15, +- 1 stdev -> 1.5 : 150
-        /// </summary>
-        public double Size;
-        public Vector2d Position { get; set; }
         public ColourVector Colour
         {
             get
             {
-                return (new ColourVector(1d, 0d, 0d, 0d));
+                return new ColourVector(0, 0, 1, 0);
             }
         }
 
-        public Food()
+        public Vector2d Position
         {
-            Size = Math.Pow(10, 1.176 + BetterRandom.StdDev(0.3d)); //random normal(mean,stdDev^2)
+            get;
+            set;
+        }
+
+        public Rock(double x,double y)
+        {
+            Position = new Vector2d(x, y);
+        }
+
+        public Rock()
+        {
             GenerateRandomPosition();
         }
 

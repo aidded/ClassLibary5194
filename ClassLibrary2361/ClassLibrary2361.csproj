@@ -50,11 +50,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BleepyBloop.cs" />
+    <Compile Include="FieldSet.cs" />
+    <Compile Include="Poison.cs" />
     <Compile Include="Food.cs" />
     <Compile Include="Fields.cs" />
     <Compile Include="Generational.cs" />
+    <Compile Include="GenerationSaver.cs" />
     <Compile Include="GenerationSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rock.cs" />
     <Compile Include="Simulation.cs" />
   </ItemGroup>
   <ItemGroup>

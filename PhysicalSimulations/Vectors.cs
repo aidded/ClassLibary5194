@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ClassLibrary2361;
-
+using ThinkingClassLibary;
 
 namespace PhysicalSimulations
 {
@@ -82,6 +82,17 @@ namespace PhysicalSimulations
         public static Vector2d operator *(double a, Vector2d b)
         {
             return (new Vector2d(a * b.x, a * b.y));
+        }
+
+        public Vector2d()
+        {
+        }
+
+        public static Vector2d GenerateRandomPosition()
+        {
+            double Theta = BetterRandom.NextDouble() * Math.PI * 2;
+            double Radius = BetterRandom.StdDev(40)+40;
+            return (new Vector2d(Math.Sin(Theta) * Radius + 50, Math.Cos(Theta) * Radius + 50));
         }
     }
 
