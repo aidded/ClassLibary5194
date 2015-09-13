@@ -49,8 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BleepSim.cs" />
     <Compile Include="BleepyBloop.cs" />
     <Compile Include="FieldSet.cs" />
+    <Compile Include="PhysicalLevel.cs" />
     <Compile Include="Poison.cs" />
     <Compile Include="Food.cs" />
     <Compile Include="Fields.cs" />
@@ -70,6 +72,10 @@
       <Project>{b0ded70a-9347-4f9b-a26f-85db6071cb9f}</Project>
       <Name>PhysicalSimulations</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

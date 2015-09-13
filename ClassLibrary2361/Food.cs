@@ -24,7 +24,7 @@ namespace ClassLibrary2361
 
         public Food()
         {
-            Size = Math.Pow(10, 1.176 + BetterRandom.StdDev(0.3d)); //random normal(mean,stdDev^2)
+            Size = Math.Pow(10, 1.176 + BetterRandom.StdDev(0.2d)); //random normal(mean,stdDev^2)
             GenerateRandomPosition();
         }
 

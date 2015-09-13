@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -92,7 +93,7 @@ namespace ClassLibrary2361
 
             FieldSet NewFieldSet = null;
             DateTime Now = DateTime.UtcNow;
-            if ((GenerationCount % 5) == 0)
+            if ((GenerationCount % 10) == 0)
             {
                 NewFieldSet = NewGeneration(Olds, Now);
             }

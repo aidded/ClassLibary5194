@@ -128,7 +128,7 @@ namespace ClassLibrary2361
         }
         public static int InputSize = 24;
         public double[] Memory;
-        public static int MemSize = 512;
+        public static int MemSize = 192;
         public double[] Outputs;
         public static int OutputSize = 14;
         public enum OAL:int
@@ -160,30 +160,41 @@ namespace ClassLibrary2361
 
         public void Vary(double StdDev, double p)
         {
+            Genes = ReturnVaried(StdDev, p);
+        }
+
+        public Instruction[] ReturnVaried(double StdDev, double p)
+        {
+            BleepyBloop b = new BleepyBloop();
+            b = (BleepyBloop)this;
             for (int i = 0; i < genes.Count(); i++)
             {
+                Instruction instruction = new Instruction(genes[i]);
+                TwoCalculation calc = instruction.Instuct;
+                calc.PropertyA = Clamper.clamp(calc.PropertyA + BetterRandom.StdDev(StdDev));
+                calc.PropertyB = Clamper.clamp(calc.PropertyB + BetterRandom.StdDev(StdDev));
 
-                genes[i].Instuct.PropertyA += BetterRandom.StdDev(StdDev);
-                genes[i].Instuct.PropertyB += BetterRandom.StdDev(StdDev);
-
                 if (BetterRandom.NextDouble() < p)
                 {
-                    genes[i].InAdrA = Instruction.RandomAddress(true,true,false,MemSize,BleepyBloop.InputSize,OutputSize);
+                    instruction.InAdrA = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize, OutputSize);
                 }
                 if (BetterRandom.NextDouble() < p)
                 {
-                    genes[i].HyAdrB = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize, OutputSize);
+                    instruction.HyAdrB = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize, OutputSize);
                 }
                 if (BetterRandom.NextDouble() < p)
                 {
-                    genes[i].OutAdr = Instruction.RandomAddress(true, false, true, MemSize, BleepyBloop.InputSize, OutputSize);
+                    instruction.OutAdr = Instruction.RandomAddress(true, false, true, MemSize, BleepyBloop.InputSize, OutputSize);
                 }
                 if (BetterRandom.NextDouble() < p)
                 {
-                    genes[i].Instuct = Calcuations.GetRandom();
+                    calc = Calcuations.GetRandom();
                 }
+                b.genes[i] = instruction;
             }
+            return b.Genes;
         }
+
 
         public double GetAddr(MemAdr a)
         {

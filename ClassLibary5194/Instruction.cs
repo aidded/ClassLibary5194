@@ -29,6 +29,14 @@ namespace ThinkingClassLibary
             Instuct = Calcuations.GetRandom();
         }
 
+        public Instruction(Instruction i)
+        {
+            InAdrA = i.InAdrA;
+            HyAdrB = i.HyAdrB;
+            OutAdr = i.OutAdr;
+            Instuct = i.Instuct;
+        }
+
         public Instruction()
         {
             int DefaultSize = 256;

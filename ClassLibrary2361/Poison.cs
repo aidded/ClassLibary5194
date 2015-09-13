@@ -24,7 +24,7 @@ namespace ClassLibrary2361
 
         public Poison()
         {
-            Size = Math.Pow(10, 1.176 + BetterRandom.StdDev(0.3d))/2; //random normal(mean,stdDev^2)
+            Size = Math.Pow(10, 1.176 + BetterRandom.StdDev(0.2d))/2; //random normal(mean,stdDev^2)
             GenerateRandomPosition();
         }
 

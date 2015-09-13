@@ -46,7 +46,7 @@ namespace ClassLibrary2361
                 F.Bloops[i].AtFrame = new List<BleepyBloop>();
                 F.Bloops[i].AtFrame.Add(new BleepyBloop());
                 F.Bloops[i].AtFrame[0].Genes = temp[i];
-                F.Bloops[i].AtFrame[0].Vary(0.008, 0.008);
+                F.Bloops[i].AtFrame[0].Vary(0.08, 0.08);
             }
             for (int i = 0; i < clones.Count(); i++)
             {
@@ -72,21 +72,34 @@ namespace ClassLibrary2361
             double Mean = Olds.Sum(x => GetNumberOfGenesToPassFromBloop(x)) / 32;
             foreach (BleepyBloop b in Olds)
             {
-                int NumberOfInstructionsToPassOn;
-                double v = GetNumberOfGenesToPassFromBloop(b);
-                if (v >= Mean)
-                {
-                    Clones.Add(b.Genes);
-                    NumberOfInstructionsToPassOn = (int)Math.Round(BleepyBloop.MemSize * (v / Mean - 1));
-                }
-                else
-                {
-                    NumberOfInstructionsToPassOn = (int)Math.Round(BleepyBloop.MemSize * (v / Mean));
-                }
-                FillGenePoolWithBloopsGenes(GenePool, b, NumberOfInstructionsToPassOn);
+                ExtractGenesToPassOn(Clones, GenePool, Mean, b);
             }
 
             return F;
+        }
+
+        private static void ExtractGenesToPassOn(List<Instruction[]> Clones, List<Instruction> GenePool, double Mean, BleepyBloop b)
+        {
+            int NumberOfInstructionsToPassOn;
+            double v = GetNumberOfGenesToPassFromBloop(b);
+            if (v >= Mean)
+            {
+                Clones.Add(b.Genes);
+                if (v >= (Mean * 2))
+                {
+                    Clones.Add(b.ReturnVaried(0.08, 0.08));
+                    NumberOfInstructionsToPassOn = (int)Math.Round(BleepyBloop.MemSize * (v / Mean - 2));
+                }
+                else
+                {
+                    NumberOfInstructionsToPassOn = (int)Math.Round(BleepyBloop.MemSize * (v / Mean - 1));
+                }
+            }
+            else
+            {
+                NumberOfInstructionsToPassOn = (int)Math.Round(BleepyBloop.MemSize * (v / Mean));
+            }
+            FillGenePoolWithBloopsGenes(GenePool, b, NumberOfInstructionsToPassOn);
         }
 
         private static void FillGenePoolWithBloopsGenes(List<Instruction> GenePool, BleepyBloop b, int NumberOfInstructionsToPassOn)
@@ -99,7 +112,7 @@ namespace ClassLibrary2361
 
         private static double GetNumberOfGenesToPassFromBloop(BleepyBloop b)
         {
-            return Math.Pow(b.ObjectiveFunction(),1);
+            return Math.Pow(b.ObjectiveFunction(),1.5);
         }
 
         public static FieldSet NewField(int Number)
@@ -113,16 +126,17 @@ namespace ClassLibrary2361
         {
             Field F = new Field(Number);
             F.Bloops = new InTime<BleepyBloop>[Number];
-            F.Foods = new List<Food>();
-            F.Poisons = new List<Poison>();
+            F.bleepSim.Bloops = F.Bloops;
+            F.physicalLevel.Foods = new List<Food>();
+            F.physicalLevel.Poisons = new List<Poison>();
             for (int i = 0; i < Number; i++)
             {
                 F.Bloops[i] = new InTime<BleepyBloop>();
                 F.Bloops[i].AtFrame.Add(new BleepyBloop());
             }
-            Field.AddNewFoodAndPoison(F, 48);
-            Field.UpdateThingChache(F);
-            F.SetThreads(Field.NumThread);
+            F.physicalLevel.AddNewFoodAndPoison(48);
+            F.physicalLevel.UpdateThingChache(F);
+            F.bleepSim.SetThreads(BleepSim.NumThread,Field.NF);
             return F;
         }
 

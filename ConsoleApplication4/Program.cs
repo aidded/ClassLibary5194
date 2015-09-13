@@ -122,7 +122,7 @@ namespace Example
 
         private static void RenderFood()
         {
-            foreach (Food V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].Foods)
+            foreach (Food V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].physicalLevel.Foods)
             {
                 if (V.Size != 0)
                 {
@@ -142,7 +142,7 @@ namespace Example
 
         private static void RenderPoison()
         {
-            foreach (Poison V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].Poisons)
+            foreach (Poison V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].physicalLevel.Poisons)
             {
                 if (V.Size != 0)
                 {
@@ -161,7 +161,7 @@ namespace Example
         }
         private static void RenderRocks()
         {
-            foreach (Rock V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].Rocks)
+            foreach (Rock V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].physicalLevel.Rocks)
             {
                 GL.Begin(PrimitiveType.Points);
                 GL.Color3(Color.LightGray);
@@ -178,7 +178,7 @@ namespace Example
 
         private static void UpdateSimu()
         {
-            for (int i = 0; i < 2;i ++)
+            for (int i = 0; i < 3;i ++)
             {
                 if (CV.Step(Pancake)) Pancake++;
             }
@@ -186,8 +186,8 @@ namespace Example
 
         private static void LoadSimu(int NumberOfThreads,bool F)
         {
-            Field.NumThread = NumberOfThreads;
-            CV.init(32,F);
+            BleepSim.NumThread = NumberOfThreads;
+            CV.init(16,F);
             Console.BufferWidth = 500;
             Console.BufferHeight = 2500;
             int n = NumberOfThreads;

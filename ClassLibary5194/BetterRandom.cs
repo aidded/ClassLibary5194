@@ -27,5 +27,21 @@ namespace ThinkingClassLibary
             if (double.IsNaN(randStdNormal)) Console.Beep();
             return randStdNormal * StdDev;
         }
+
+        public static int PoisonVariable(double Lambda)
+        {
+            // Algorithm due to Donald Knuth, 1969.
+            double p = 1.0, L = Math.Exp(-Lambda);
+            int k = 0;
+            do
+            {
+                k++;
+                p *= NextDouble();
+            }
+            while (p > L);
+            int PoisonVariable = k - 1;
+            return PoisonVariable;
+        }
+
     }
 }
