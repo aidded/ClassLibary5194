@@ -51,6 +51,41 @@ namespace ThinkingClassLibary
             return Clamper.clamp(C,-1024,1024);
         }
     }
+
+    public class Compare : TwoCalculation
+    {
+        double OutputMagnitude;
+        double DiscreteContinous;
+
+        public override double PropertyA { get { return OutputMagnitude; } set { OutputMagnitude = value; } }
+        public override double PropertyB { get { return DiscreteContinous; } set { DiscreteContinous = value; } }
+
+        public override double Evaluate(double A, double B)
+        {
+            double C = new double();
+            if (DiscreteContinous <= 0)
+            {
+                if(A>B)
+                {
+                    C = OutputMagnitude;
+                }
+                else if(B>A)
+                {
+                    C = -OutputMagnitude;
+                }
+                else
+                {
+                    C = 0;
+                }
+            }
+            else
+            {
+                C = (A - B) / (DiscreteContinous);
+            }
+            return C;
+        }
+    }
+
     public class EqualsOrNot: TwoCalculation
     {
         double DiscreteContinous;
@@ -101,6 +136,7 @@ namespace ThinkingClassLibary
             {
                 case 0: return new AddOrMultiply();
                 case 1: return new EqualsOrNot();
+                case 2: return new Compare();
                 default: return null;
             } 
         }
@@ -112,7 +148,7 @@ namespace ThinkingClassLibary
 
         public static TwoCalculation GetRandom()
         {
-            TwoCalculation c = (GetBlankFromDouble((BetterRandom.NextDouble() * 2) - 0.5));
+            TwoCalculation c = (GetBlankFromDouble((BetterRandom.NextDouble() * 3) - 0.5));
             c.PropertyA = (BetterRandom.NextDouble() - 0.5) * 2;
             c.PropertyB = (BetterRandom.NextDouble() - 0.5) * 2;
             return c;

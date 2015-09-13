@@ -128,7 +128,7 @@ namespace ClassLibrary2361
         }
         public static int InputSize = 24;
         public double[] Memory;
-        public static int MemSize = 192;
+        public static int MemSize = 750;
         public double[] Outputs;
         public static int OutputSize = 14;
         public enum OAL:int
@@ -226,7 +226,7 @@ namespace ClassLibrary2361
             Position = new Vector2d(BetterRandom.NextDouble() * 64, BetterRandom.NextDouble() * 64);
             for (int e = 0; e < MemSize; e++)
             {
-                G[e] = new Instruction(MemSize);
+                G[e] = new Instruction(MemSize,InputSize,OutputSize);
             }
         }
 

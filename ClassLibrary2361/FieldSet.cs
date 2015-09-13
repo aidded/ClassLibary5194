@@ -62,7 +62,7 @@ namespace ClassLibrary2361
         {
             for (int i = 0; i < BleepyBloop.MemSize * 32; i++)
             {
-                GenePool.Add(new Instruction(BleepyBloop.MemSize));
+                GenePool.Add(new Instruction(BleepyBloop.MemSize,BleepyBloop.InputSize,BleepyBloop.OutputSize));
             }
         }
 

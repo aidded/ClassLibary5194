@@ -21,11 +21,11 @@ namespace ThinkingClassLibary
             }
         }
 
-        public Instruction(int MemSize)
+        public Instruction(int MemSize,int InputSize, int OutputSize)
         {
-            InAdrA = RandomAddress(true, true, false, MemSize, 12, 2);
-            HyAdrB = RandomAddress(true, true, false, MemSize, 12, 2);
-            OutAdr = RandomAddress(true, false, true, MemSize, 12, 2);
+            InAdrA = RandomAddress(true, true, false, MemSize, InputSize, OutputSize);
+            HyAdrB = RandomAddress(true, true, false, MemSize, InputSize, OutputSize);
+            OutAdr = RandomAddress(true, false, true, MemSize, InputSize, OutputSize);
             Instuct = Calcuations.GetRandom();
         }
 
@@ -35,15 +35,6 @@ namespace ThinkingClassLibary
             HyAdrB = i.HyAdrB;
             OutAdr = i.OutAdr;
             Instuct = i.Instuct;
-        }
-
-        public Instruction()
-        {
-            int DefaultSize = 256;
-            InAdrA = RandomAddress(true, true, false, DefaultSize, 12, 2);
-            HyAdrB = RandomAddress(true, true, false, DefaultSize, 12, 2);
-            OutAdr = RandomAddress(true, false, true, DefaultSize, 12, 2);
-            Instuct = Calcuations.GetRandom();
         }
 
         public static MemAdr RandomAddress(bool CanBeMemory, bool CanBeInput, bool CanBeOutput, int MemSize, int InputSize, int OutputSize)
