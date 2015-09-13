@@ -21,7 +21,7 @@ namespace ThinkingClassLibary
         public void Set(double i, double o)
         {
             int n = (int)Math.Round(ThinkingClassLibary.Clamper.clamp(i, 0d) * (MemorySize - 1));
-            Memory[n] = 0;
+            Memory[n] = o;
         }
 
         public MemoryBuffet(int Size)
@@ -32,6 +32,11 @@ namespace ThinkingClassLibary
 
         public MemoryBuffet()
         {
+        }
+
+        public double Max()
+        {
+            return Memory.Max();
         }
     }
 }

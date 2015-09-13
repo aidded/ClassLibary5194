@@ -150,7 +150,7 @@ namespace ClassLibrary2361
         }
 
         public static int NumMemBuffet = 4;
-        public static int MemBufSize = 35000;
+        public static int MemBufSize = Field.NF;
         public MemoryBuffet[] Buffet;
 
         public override double ObjectiveFunction()
@@ -194,7 +194,6 @@ namespace ClassLibrary2361
             }
             return b.Genes;
         }
-
 
         public double GetAddr(MemAdr a)
         {
