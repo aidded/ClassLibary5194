@@ -8,6 +8,7 @@ namespace ThinkingClassLibary
 {
     [XmlInclude(typeof(AddOrMultiply))]
     [XmlInclude(typeof(EqualsOrNot))]
+    [XmlInclude(typeof(Compare))]
     public abstract class TwoCalculation
     {
         public abstract double PropertyA { get; set; }

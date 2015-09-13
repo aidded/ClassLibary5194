@@ -21,12 +21,16 @@ namespace ThinkingClassLibary
             }
         }
 
-        public Instruction(int MemSize,int InputSize, int OutputSize)
+        public Instruction(int MemSize, int InputSize, int OutputSize)
         {
             InAdrA = RandomAddress(true, true, false, MemSize, InputSize, OutputSize);
             HyAdrB = RandomAddress(true, true, false, MemSize, InputSize, OutputSize);
             OutAdr = RandomAddress(true, false, true, MemSize, InputSize, OutputSize);
             Instuct = Calcuations.GetRandom();
+        }
+
+        public Instruction()
+        { 
         }
 
         public Instruction(Instruction i)
