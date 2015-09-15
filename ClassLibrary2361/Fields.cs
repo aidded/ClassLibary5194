@@ -14,11 +14,13 @@ namespace ClassLibrary2361
         public BleepSim bleepSim;
 
         public BleepyBloop[] Bloops;
+        public BleepyBloop[] PreviousOrderCheck;
 
-        public const int NF = 600;
+        public const int NF = 5000;
 
         public Field(int NumberOfBloops)
         {
+            PreviousOrderCheck = new BleepyBloop[0];
             physicalLevel = new PhysicalLevel();
             bleepSim = new BleepSim();
             InitRockBarrier();
@@ -145,6 +147,7 @@ namespace ClassLibrary2361
             //NullCheck(Frame);
             SimulatePhy(Frame);
             //NullCheck(Frame);
+            //CheckBloopsAreInSameOrder();
             Frame++;
             if (Frame > NF)
             {
@@ -154,6 +157,7 @@ namespace ClassLibrary2361
                     bleepSim.Hs[i].Join();
                 }
             }
+
             return (Frame > NF);
         }
 
@@ -260,6 +264,30 @@ namespace ClassLibrary2361
             {
                 Bloops[i].Poison -= 0.4;
             }
+        }
+
+        public void CheckBloopsAreInSameOrder()
+        {
+            if(PreviousOrderCheck.Count()!=Bloops.Count())
+            {
+                PreviousOrderCheck = new BleepyBloop[Bloops.Count()];
+                for (int i = 0; i < Bloops.Count(); i++)
+                {
+                    PreviousOrderCheck[i] = (BleepyBloop)Bloops[i];
+                }
+            }
+            for (int i = 0; i < Bloops.Count(); i++)
+            {
+                if (Bloops.OrderByDescending(y => y.Food).ToArray()[i].RandomID != PreviousOrderCheck.ToArray()[i].RandomID)
+                {
+                    Console.WriteLine(frame);
+                }
+            }
+            for (int i = 0; i < Bloops.Count(); i++)
+            {
+                PreviousOrderCheck[i] = (BleepyBloop)Bloops[i];
+            }
+            PreviousOrderCheck = PreviousOrderCheck.OrderByDescending(y => y.Food).ToArray();
         }
     }
 }

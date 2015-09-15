@@ -111,11 +111,15 @@ namespace ClassLibrary2361
         {
             FieldSet NewFieldSet;
 
-            PrintSpeeds(Olds, Now);
+            //PrintSpeeds(Olds, Now);
+            Console.Write(Olds.Select(j => j.Food).Sum().ToString("000000")+"\t");
+            Console.Write(Olds.Select(j => j.Food).Average().ToString("000000") + "\t");
+            Console.Write(Olds.Count()+"\t");
             if (f)
             {
                 SerializeBloops(Olds);
             }
+            Console.WriteLine();
             NewFieldSet = FieldSet.NewField(Olds.ToArray());
             Turnip = NewFieldSet;
             return NewFieldSet;

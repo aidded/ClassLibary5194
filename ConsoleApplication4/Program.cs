@@ -198,7 +198,7 @@ namespace Example
         private static void LoadSimu(int NumberOfThreads,bool F)
         {
             BleepSim.NumThread = NumberOfThreads;
-            CV.init(16,F);
+            CV.init(48,F);
             Console.BufferWidth = 500;
             Console.BufferHeight = 2500;
             int n = NumberOfThreads;

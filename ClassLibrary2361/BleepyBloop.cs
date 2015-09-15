@@ -84,6 +84,8 @@ namespace ClassLibrary2361
                 (0.4 * LeftRight * Math.Sin(Rotation))));
         }
 
+        public int RandomID;
+
         public double parentsFood;
         private double food=15;
         public double Poison = -1;
@@ -156,7 +158,7 @@ namespace ClassLibrary2361
 
         public override double ObjectiveFunction()
         {
-            return Food;
+            return Food+parentsFood;
         }
 
         public void Vary(double StdDev, double p)
@@ -244,6 +246,7 @@ namespace ClassLibrary2361
             R = new ColourVector();
             F = new ColourVector();
             G = new Instruction[MemSize];
+            RandomID = BetterRandom.R.Next(1000 * 1000 * 1000);
         }
     }
 }
