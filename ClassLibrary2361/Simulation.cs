@@ -53,7 +53,7 @@ namespace ClassLibrary2361
         private Thread[] hs;
         public double MaxStdDevMeanRatio()
         {
-            return SimuStats.Transpose(Turnip.Generations.Select(t => t.Lifes.Select(l => l.AtFrame[t.Frame].ObjectiveFunction()))).Select(c => SimuStats.StdDev(c.ToArray()) / c.Average()).Max();
+            return SimuStats.Transpose(Turnip.Generations.Select(t => t.Lifes.Select(l => l.ObjectiveFunction()))).Select(c => SimuStats.StdDev(c.ToArray()) / c.Average()).Max();
         }
         public FieldSet Turnip;
 
@@ -89,11 +89,11 @@ namespace ClassLibrary2361
             int LastGenIndex = Turnip.Generations.Count() - 1;
             int LastFrameIdx = Turnip.Generations[LastGenIndex].Frame;
             //GetLastGenBleepyBloopsFromLastGeneration
-            IEnumerable<BleepyBloop> Olds = Turnip.Generations[LastGenIndex].Lifes.Select(j => (BleepyBloop)j.AtFrame[LastFrameIdx]);
+            IEnumerable<BleepyBloop> Olds = Turnip.Generations[LastGenIndex].Lifes.Select(j => (BleepyBloop)j);
 
             FieldSet NewFieldSet = null;
             DateTime Now = DateTime.UtcNow;
-            if ((GenerationCount % 10) == 0)
+            if ((GenerationCount % 6) == 0)
             {
                 NewFieldSet = NewGeneration(Olds, Now);
             }

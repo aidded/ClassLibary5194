@@ -84,6 +84,7 @@ namespace ClassLibrary2361
                 (0.4 * LeftRight * Math.Sin(Rotation))));
         }
 
+        public double parentsFood;
         private double food=15;
         public double Poison = -1;
         public double MoveSpeed

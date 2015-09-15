@@ -8,7 +8,7 @@ namespace ClassLibrary2361
 {
     public abstract class Generational
     {
-        public abstract InTime<LifeForm>[] Lifes { get; }
+        public abstract LifeForm[] Lifes { get; }
         public int Frame { get; set; }
         public virtual bool Step() { return false; }
     }

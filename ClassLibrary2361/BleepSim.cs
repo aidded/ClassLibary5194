@@ -28,7 +28,7 @@ namespace ClassLibrary2361
         }
         [XmlIgnore]
         public EventWaitHandle[] WaiterK;
-        public InTime<BleepyBloop>[] Bloops;
+        public BleepyBloop[] Bloops;
         public void SetThreads(int n, int NF)
         {
             if (!ThreadsHaveBeenSet)
@@ -88,29 +88,30 @@ namespace ClassLibrary2361
 
                 AccessBuffer(i);
 
-                foreach (Instruction I in Bloops[i].AtFrame[Frame].Genes)
+                foreach (Instruction I in Bloops[i].Genes)
                 {
-                    Bloops[i].AtFrame[Frame].SetAddr(I.OutAdr,
+                    Bloops[i].SetAddr(I.OutAdr,
                         I.Instuct.Evaluate(
-                            Bloops[i].AtFrame[Frame].GetAddr(I.InAdrA),
-                            Bloops[i].AtFrame[Frame].GetAddr(I.HyAdrB)));
+                            Bloops[i].GetAddr(I.InAdrA),
+                            Bloops[i].GetAddr(I.HyAdrB)));
                 }
             }
         }
         private void AccessBuffer(int i)
         {
-            for (int j = 0; j < Bloops[i].AtFrame[Frame].Buffet.Count(); j++)
+            BleepyBloop Bloop = Bloops[i];
+            for (int j = 0; j < Bloop.Buffet.Count(); j++)
             {
-                Bloops[i].AtFrame[Frame].Buffet[j].Set(Bloops[i].AtFrame[Frame].Outputs[j * 3 + 3], Bloops[i].AtFrame[Frame].Outputs[(j * 3) + 2]);
-                Bloops[i].AtFrame[Frame].Inputs[16 + j] = Bloops[i].AtFrame[Frame].Buffet[j].Get(Bloops[i].AtFrame[Frame].Outputs[j * 3 + 4]);
+                Bloop.Buffet[j].Set(Bloop.Outputs[j * 3 + 3], Bloop.Outputs[(j * 3) + 2]);
+                Bloop.Inputs[16 + j] = Bloop.Buffet[j].Get(Bloop.Outputs[j * 3 + 4]);
             }
         }
         private void SetConstants(int i)
         {
-            Bloops[i].AtFrame[Frame].Inputs[(int)BleepyBloop.IAL.ConstOne] = 1d;
-            Bloops[i].AtFrame[Frame].Inputs[(int)BleepyBloop.IAL.ConstZero] = 0d;
-            Bloops[i].AtFrame[Frame].Inputs[(int)BleepyBloop.IAL.ConstNegativeOne] = -1d;
-            Bloops[i].AtFrame[Frame].Inputs[(int)BleepyBloop.IAL.ConstHalf] = 0.5d;
+            Bloops[i].Inputs[(int)BleepyBloop.IAL.ConstOne] = 1d;
+            Bloops[i].Inputs[(int)BleepyBloop.IAL.ConstZero] = 0d;
+            Bloops[i].Inputs[(int)BleepyBloop.IAL.ConstNegativeOne] = -1d;
+            Bloops[i].Inputs[(int)BleepyBloop.IAL.ConstHalf] = 0.5d;
         }
     }
 }

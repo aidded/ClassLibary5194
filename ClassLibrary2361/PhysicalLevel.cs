@@ -58,7 +58,7 @@ namespace ClassLibrary2361
         public void UpdateThingChache(Field F)
         {
             List<IPhysical<Vector2d>> J = new List<IPhysical<Vector2d>>();
-            J.AddRange(F.Bloops.Select(R => R.AtFrame[F.Frame]));
+            J.AddRange(F.Bloops);
             foreach (Food B in Foods)
             {
                 J.Add(B);
@@ -89,14 +89,14 @@ namespace ClassLibrary2361
             int PoisonVariable = BetterRandom.PoisonVariable(0.01);
             for (int i = 0; i < PoisonVariable; i++)
             {
-                InTime<Food> tmp = new InTime<Food>();
+                Food tmp = new Food();
                 Foods.Add(new Food());
             }
 
             PoisonVariable = BetterRandom.PoisonVariable(0.015);
             for (int i = 0; i < PoisonVariable; i++)
             {
-                InTime<Poison> tmp = new InTime<Poison>();
+                Poison tmp = new Poison();
                 Poisons.Add(new Poison());
             }
         }

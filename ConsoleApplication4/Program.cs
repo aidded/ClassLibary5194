@@ -11,6 +11,7 @@ namespace Example
 {
     class MyApplication
     {
+        static int s = 3;
         static FieldSimulation CV = new FieldSimulation();
         static int Pancake = 1;
         static Thread[] Hs;
@@ -40,7 +41,18 @@ namespace Example
 
                 game.Resize += (sender, e) => GL.Viewport(0, 0, game.Width, game.Height);
 
-                game.UpdateFrame += (sender, e) => UpdateSimu();
+                game.UpdateFrame += (sender, e) =>
+                {
+                    if (Keyboard.GetState().IsKeyDown(Key.F))
+                    {
+                        s = 4;
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Key.S))
+                    {
+                        s = 1;
+                    }
+                    UpdateSimu();
+                };
 
                 game.RenderFrame += (sender, e) =>
                 {
@@ -74,11 +86,10 @@ namespace Example
 
         private static void RenderBloops()
         {
-            foreach (InTime<BleepyBloop> V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].Bloops)
+            foreach (BleepyBloop B in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].Bloops)
             {
                 GL.Begin(PrimitiveType.Points);
                 GL.Color3(Color.Orange);
-                BleepyBloop B = V.AtFrame[V.AtFrame.Count - 1];
                 double x = B.Position.x;
                 double y = B.Position.y;
                 double sr = B.Rotation + (Math.PI / 6);
@@ -178,7 +189,7 @@ namespace Example
 
         private static void UpdateSimu()
         {
-            for (int i = 0; i < 3;i ++)
+            for (int i = 0; i < s;i ++)
             {
                 if (CV.Step(Pancake)) Pancake++;
             }

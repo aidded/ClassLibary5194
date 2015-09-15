@@ -13,9 +13,9 @@ namespace ClassLibrary2361
         public PhysicalLevel physicalLevel;
         public BleepSim bleepSim;
 
-        public InTime<BleepyBloop>[] Bloops;
+        public BleepyBloop[] Bloops;
 
-        public const int NF = 1000;
+        public const int NF = 600;
 
         public Field(int NumberOfBloops)
         {
@@ -56,11 +56,11 @@ namespace ClassLibrary2361
 
         public int frame;
 
-        public override InTime<LifeForm>[] Lifes
+        public override LifeForm[] Lifes
         {
             get
             {
-                return (Bloops.Select(r => InTime<LifeForm>.FromList(r.AtFrame.ConvertAll(x => (LifeForm)x))).ToArray());
+                return (Bloops.ToList().ConvertAll(q=>(LifeForm)q).ToArray());
             }
         }
 
@@ -78,7 +78,7 @@ namespace ClassLibrary2361
         {
             for (int i = 0; i < Bloops.Count(); i++)
             {
-                BleepyBloop h = Bloops[i].AtFrame[Frame];
+                BleepyBloop h = Bloops[i];
                 double V = h.MoveSpeed;
                 var LThrust = Clamper.clamp(h.Outputs[(int)BleepyBloop.OAL.OutThrustL]);
                 var RThrust = Clamper.clamp(h.Outputs[(int)BleepyBloop.OAL.OutThrustR]);
@@ -95,18 +95,18 @@ namespace ClassLibrary2361
         {
             for (int i = 0; i < Bloops.Count(); i++)
             {
-                BleepyBloop h = Bloops[i].AtFrame[Frame];
-                Bloops[i].AtFrame[Frame].L = new ColourVector();
-                Bloops[i].AtFrame[Frame].R = new ColourVector();
-                Bloops[i].AtFrame[Frame].F = new ColourVector();
-                physicalLevel.CAP(h.PosSensor(1d, 0.8), Frame, ref Bloops[i].AtFrame[Frame].L);
-                physicalLevel.CAP(h.PosSensor(-1d, 0.8), Frame, ref Bloops[i].AtFrame[Frame].R);
-                physicalLevel.CAP(h.PosSensor(0, 1.6), Frame, ref Bloops[i].AtFrame[Frame].F);
+                BleepyBloop h = Bloops[i];
+                Bloops[i].L = new ColourVector();
+                Bloops[i].R = new ColourVector();
+                Bloops[i].F = new ColourVector();
+                physicalLevel.CAP(h.PosSensor(1d, 0.8), Frame, ref Bloops[i].L);
+                physicalLevel.CAP(h.PosSensor(-1d, 0.8), Frame, ref Bloops[i].R);
+                physicalLevel.CAP(h.PosSensor(0, 1.6), Frame, ref Bloops[i].F);
                 for (int j = 0; j < 4; j++)
                 {
-                    h.Inputs[j * 3] = Bloops[i].AtFrame[Frame].L.CoOrdinates[j];
-                    h.Inputs[j * 3 + 1] = Bloops[i].AtFrame[Frame].R.CoOrdinates[j];
-                    h.Inputs[j * 3 + 2] = Bloops[i].AtFrame[Frame].F.CoOrdinates[j];
+                    h.Inputs[j * 3] = Bloops[i].L.CoOrdinates[j];
+                    h.Inputs[j * 3 + 1] = Bloops[i].R.CoOrdinates[j];
+                    h.Inputs[j * 3 + 2] = Bloops[i].F.CoOrdinates[j];
                 }
             }
         }
@@ -145,10 +145,6 @@ namespace ClassLibrary2361
             //NullCheck(Frame);
             SimulatePhy(Frame);
             //NullCheck(Frame);
-            for (int i = 0; i < Bloops.Count(); i++)
-            {
-                Bloops[i].AtFrame.Add(Bloops[i].AtFrame.Last());
-            }
             Frame++;
             if (Frame > NF)
             {
@@ -164,15 +160,15 @@ namespace ClassLibrary2361
         private static Field InitNewFieldWithOldBleeps(BleepyBloop[] Olds)
         {
             Field F = new Field(Olds.Count());
-            F.Bloops = new InTime<BleepyBloop>[Olds.Count()];
+            F.Bloops = new BleepyBloop[Olds.Count()];
             F.physicalLevel.Foods = new List<Food>();
             F.physicalLevel.Poisons = new List<Poison>();
             for (int i = 0; i < Olds.Count(); i++)
             {
-                F.Bloops[i] = new InTime<BleepyBloop>();
-                F.Bloops[i].AtFrame.Add(new BleepyBloop());
-                F.Bloops[i].AtFrame[0].Genes = Olds[i].Genes;
-                F.Bloops[i].AtFrame[0].Food += Olds[i].Food;
+                F.Bloops[i] = new BleepyBloop();
+                F.Bloops[i] = new BleepyBloop();
+                F.Bloops[i].Genes = Olds[i].Genes;
+                F.Bloops[i].Food += Olds[i].Food;
             }
 
             return F;
@@ -185,27 +181,27 @@ namespace ClassLibrary2361
             {
                 if (i < oo)
                 {
-                    if (Math.Abs(Bloops[i].AtFrame[Frame].Position.x - Bloops[oo].AtFrame[Frame].pos.x) < 2d)
+                    if (Math.Abs(Bloops[i].Position.x - Bloops[oo].pos.x) < 2d)
                     {
-                        if (Math.Abs(Bloops[i].AtFrame[Frame].Position.y - Bloops[oo].AtFrame[Frame].pos.y) < 2d)
+                        if (Math.Abs(Bloops[i].Position.y - Bloops[oo].pos.y) < 2d)
                         {
-                            Vector2d Diff = Bloops[oo].AtFrame[Frame].pos - Bloops[i].AtFrame[Frame].pos;
-                            Bloops[i].AtFrame[Frame].pos -= 0.5d * Diff;
-                            Bloops[oo].AtFrame[Frame].pos -= -0.5d * Diff;
+                            Vector2d Diff = Bloops[oo].pos - Bloops[i].pos;
+                            Bloops[i].pos -= 0.5d * Diff;
+                            Bloops[oo].pos -= -0.5d * Diff;
                         }
                     }
                 }
             }
             foreach (Rock r in physicalLevel.Rocks)
             {
-                double diffX = (Bloops[i].AtFrame[Frame].Position.x - r.Position.x);
+                double diffX = (Bloops[i].Position.x - r.Position.x);
                 if (diffX*diffX < 4d)
                 {
-                    double diffY = (Bloops[i].AtFrame[Frame].Position.y - r.Position.y);
+                    double diffY = (Bloops[i].Position.y - r.Position.y);
                     if (diffY*diffY < 4d)
                     {
-                        Vector2d Diff = Bloops[i].AtFrame[Frame].pos - r.Position;
-                        Bloops[i].AtFrame[Frame].pos -= -1d * Diff;
+                        Vector2d Diff = Bloops[i].pos - r.Position;
+                        Bloops[i].pos -= -1d * Diff;
                     }
                 }
             }
@@ -216,7 +212,7 @@ namespace ClassLibrary2361
             int FoodCount = physicalLevel.Foods.Count();
             for (int oo = 0; oo < FoodCount; oo++)
             {
-                BleepyBloop localBloop = Bloops[i].AtFrame[Frame];
+                BleepyBloop localBloop = Bloops[i];
                 Food food = physicalLevel.Foods[oo];
                 double diffX = (localBloop.Position.x - food.Position.x);
                 if (diffX*diffX < 2.25d)
@@ -239,7 +235,7 @@ namespace ClassLibrary2361
             int LUP = physicalLevel.Poisons.Count();
             for (int oo = 0; oo < LUP; oo++)
             {
-                BleepyBloop localBloop = Bloops[i].AtFrame[Frame];
+                BleepyBloop localBloop = Bloops[i];
                 Poison poison = physicalLevel.Poisons[oo];
                 double xDiff = (localBloop.Position.x - poison.Position.x);
                 if (xDiff*xDiff < 2.25d)
@@ -260,12 +256,10 @@ namespace ClassLibrary2361
 
         private void RemovePoisonFromBloop(int Frame, int i)
         {
-            if (Bloops[i].AtFrame[Frame].Poison > 0)
+            if (Bloops[i].Poison > 0)
             {
-                Bloops[i].AtFrame[Frame].Poison -= 0.4;
+                Bloops[i].Poison -= 0.4;
             }
         }
-
-
     }
 }
