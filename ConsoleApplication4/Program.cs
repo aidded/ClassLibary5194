@@ -43,14 +43,7 @@ namespace Example
 
                 game.UpdateFrame += (sender, e) =>
                 {
-                    if (Keyboard.GetState().IsKeyDown(Key.F))
-                    {
-                        s = 4;
-                    }
-                    if (Keyboard.GetState().IsKeyDown(Key.S))
-                    {
-                        s = 1;
-                    }
+                    CheckKeyboardAndAct();
                     UpdateSimu();
                 };
 
@@ -61,6 +54,18 @@ namespace Example
 
                 // Run the game at 60 updates per second
                 game.Run(200, 60);
+            }
+        }
+
+        private static void CheckKeyboardAndAct()
+        {
+            if (Keyboard.GetState().IsKeyDown(Key.F))
+            {
+                s = 4;
+            }
+            if (Keyboard.GetState().IsKeyDown(Key.S))
+            {
+                s = 1;
             }
         }
 
@@ -135,7 +140,7 @@ namespace Example
         {
             foreach (Food V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].physicalLevel.Foods)
             {
-                if (V.Size != 0)
+                if (V.Calories != 0)
                 {
                     GL.Begin(PrimitiveType.Points);
                     GL.Color3(Color.Green);
@@ -144,7 +149,7 @@ namespace Example
                     GL.Begin(PrimitiveType.LineLoop);
                     for (double r = 0; r < 7; r += 0.5)
                     {
-                        GL.Vertex2(V.Position.x + Math.Sqrt(V.Size / 15d) * Math.Sin(r), V.Position.y + Math.Sqrt(V.Size / 15d) * Math.Cos(r));
+                        GL.Vertex2(V.Position.x + Math.Sqrt(V.Calories / 15d) * Math.Sin(r), V.Position.y + Math.Sqrt(V.Calories / 15d) * Math.Cos(r));
                     }
                     GL.End();
                 }
@@ -155,7 +160,7 @@ namespace Example
         {
             foreach (Poison V in CV.Turnip.Generations[CV.Turnip.Generations.Count - 1].physicalLevel.Poisons)
             {
-                if (V.Size != 0)
+                if (V.PoisonSize != 0)
                 {
                     GL.Begin(PrimitiveType.Points);
                     GL.Color3(Color.CornflowerBlue);
@@ -164,7 +169,7 @@ namespace Example
                     GL.Begin(PrimitiveType.LineLoop);
                     for (double r = 0; r < 7; r += 0.5)
                     {
-                        GL.Vertex2(V.Position.x + Math.Sqrt(V.Size / 15d) * Math.Sin(r), V.Position.y + Math.Sqrt(V.Size / 15d) * Math.Cos(r));
+                        GL.Vertex2(V.Position.x + Math.Sqrt(V.PoisonSize / 15d) * Math.Sin(r), V.Position.y + Math.Sqrt(V.PoisonSize / 15d) * Math.Cos(r));
                     }
                     GL.End();
                 }

@@ -58,17 +58,37 @@ namespace ClassLibrary2361
             WaiterK = new EventWaitHandle[n];
             for (int ThreadIterator = 0; ThreadIterator < n; ThreadIterator++)
             {
-                if (Hs[ThreadIterator] != null) Hs[ThreadIterator].Join();
-                WaiterA[ThreadIterator] = new AutoResetEvent(false);
-                WaiterK[ThreadIterator] = new AutoResetEvent(false);
-                int Start = (int)Math.Round((ThreadIterator * (double)Bloops.Count() / n));
-                int End = (int)Math.Round(((ThreadIterator + 1) * (double)Bloops.Count() / n));
-                Hs[ThreadIterator] = new Thread(() => SimulateBloops(Start, End, ThreadIterator,NF));
-                Hs[ThreadIterator].Start();
-                while (Hs[ThreadIterator].ThreadState != ThreadState.WaitSleepJoin) ;
+                SetIndividualThread(n, NF, ThreadIterator);
             }
             ThreadsHaveBeenSet = true;
         }
+
+        private void SetIndividualThread(int n, int NF, int ThreadIterator)
+        {
+            if (Hs[ThreadIterator] != null) Hs[ThreadIterator].Join();
+
+            SetWaiters(ThreadIterator);
+
+            SetUpThread(n, NF, ThreadIterator);
+            Hs[ThreadIterator].Start();
+
+            while (Hs[ThreadIterator].ThreadState != ThreadState.WaitSleepJoin) ;
+        }
+
+        private void SetUpThread(int n, int NF, int ThreadIterator)
+        {
+            int Start = (int)Math.Round((ThreadIterator * (double)Bloops.Count() / n));
+            int End = (int)Math.Round(((ThreadIterator + 1) * (double)Bloops.Count() / n));
+
+            Hs[ThreadIterator] = new Thread(() => SimulateBloops(Start, End, ThreadIterator, NF));
+        }
+
+        private void SetWaiters(int ThreadIterator)
+        {
+            WaiterA[ThreadIterator] = new AutoResetEvent(false);
+            WaiterK[ThreadIterator] = new AutoResetEvent(false);
+        }
+
         public void RunThreads()
         {
             for (int i = 0; i < WaiterK.Count(); i++)

@@ -83,32 +83,31 @@ namespace ClassLibrary2361
         {
             if (Total >= 0)
             {
-                int NumberOfInstructionsToPassOn;
                 double v = Math.Round(GetNumberOfGenesToPassFromBloop(b));
+                int NumberOfInstructionsToPassOn = (int)Math.Round(BleepyBloop.MemSize * (v / Mean));
                 if (v >= Mean)
                 {
                     Clones.Add(b.Genes);
                     PastFoods.Add(b.Food);
+                    int NumbClones = 1;
                     if (v >= (Mean * 2))
                     {
-                        Clones.Add(b.ReturnVaried(0.08, 0.08));
-                        PastFoods.Add(b.Food);
-                        NumberOfInstructionsToPassOn = (int)Math.Round(BleepyBloop.MemSize * ((v / Mean) - 2));
-                        Total -= 2 * BleepyBloop.MemSize;
+                        NumbClones = AddAnotherClone(Clones, b, PastFoods, NumbClones);
                     }
-                    else
-                    {
-                        NumberOfInstructionsToPassOn = (int)Math.Round(BleepyBloop.MemSize * ((v / Mean) - 1));
-                        Total -= BleepyBloop.MemSize;
-                    }
-                }
-                else
-                {
-                    NumberOfInstructionsToPassOn = (int)Math.Round(BleepyBloop.MemSize * (v / Mean));
+                    NumberOfInstructionsToPassOn -= BleepyBloop.MemSize * NumbClones;
+                    Total -= NumbClones*BleepyBloop.MemSize;
                 }
                 FillGenePoolWithBloopsGenes(GenePool, b, NumberOfInstructionsToPassOn);
                 Total -= NumberOfInstructionsToPassOn;
             }
+        }
+
+        private static int AddAnotherClone(List<Instruction[]> Clones, BleepyBloop b, List<double> PastFoods, int NumbClones)
+        {
+            Clones.Add(b.ReturnVaried(0.08, 0.08));
+            PastFoods.Add(b.Food);
+            NumbClones++;
+            return NumbClones;
         }
 
         private static void FillGenePoolWithBloopsGenes(List<Instruction> GenePool, BleepyBloop b, int NumberOfInstructionsToPassOn)

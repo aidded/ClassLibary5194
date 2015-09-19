@@ -12,7 +12,7 @@ namespace ClassLibrary2361
         /// <summary>
         /// Log natural distributed - average of 15, +- 1 stdev -> 1.5 : 150
         /// </summary>
-        public double Size;
+        public double PoisonSize;
         public Vector2d Position { get; set; }
         public ColourVector Colour
         {
@@ -24,8 +24,16 @@ namespace ClassLibrary2361
 
         public Poison()
         {
-            Size = Math.Pow(10, 1.176 + BetterRandom.StdDev(0.2d))/2; //random normal(mean,stdDev^2)
+            PoisonSize = Math.Pow(10, 1.176 + BetterRandom.StdDev(0.2d))/2; //random normal(mean,stdDev^2)
             GenerateRandomPosition();
+        }
+
+        public double Size
+        {
+            get
+            {
+                return 0.7;
+            }
         }
 
         private void GenerateRandomPosition()

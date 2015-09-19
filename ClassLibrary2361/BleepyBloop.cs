@@ -9,7 +9,13 @@ namespace ClassLibrary2361
     public class BleepyBloop : LifeForm, IPhysical<Vector2d>
     {
         public Vector2d pos;
-
+        public double Size
+        {
+            get
+            {
+                return 0.7;
+            }
+        }
         public Vector2d Position
         {
             get
@@ -32,6 +38,7 @@ namespace ClassLibrary2361
         public ColourVector L;
         public ColourVector R;
         public ColourVector F;
+        public ColourVector Line;
 
         public override Instruction[] Genes
         {
@@ -126,14 +133,17 @@ namespace ClassLibrary2361
             ValuInBuferOut1 = 16,
             ValuInBuferOut2 = 17,
             ValuInBuferOut3 = 18,
-            ValuInBuferOut4 = 19
-
+            ValuInBuferOut4 = 19,
+            LineInGreen = 20,
+            LineInOrange = 21,
+            LineInGrey = 22,
+            LineInBlue = 23
         }
         public static int InputSize = 24;
         public double[] Memory;
         public static int MemSize = 750;
         public double[] Outputs;
-        public static int OutputSize = 14;
+        public static int OutputSize = 15;
         public enum OAL:int
         {
             OutThrustL = 0,
@@ -150,6 +160,7 @@ namespace ClassLibrary2361
             ValuToPutInBuffer4 = 11,
             ToBufferInputAddr4 = 12,
             FromBufrOutputAdr4 = 13,
+            LineAngleOut = 14
         }
 
         public static int NumMemBuffet = 4;
@@ -177,18 +188,7 @@ namespace ClassLibrary2361
                 calc.PropertyA = Clamper.clamp(calc.PropertyA + BetterRandom.StdDev(StdDev));
                 calc.PropertyB = Clamper.clamp(calc.PropertyB + BetterRandom.StdDev(StdDev));
 
-                if (BetterRandom.NextDouble() < p)
-                {
-                    instruction.InAdrA = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize, OutputSize);
-                }
-                if (BetterRandom.NextDouble() < p)
-                {
-                    instruction.HyAdrB = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize, OutputSize);
-                }
-                if (BetterRandom.NextDouble() < p)
-                {
-                    instruction.OutAdr = Instruction.RandomAddress(true, false, true, MemSize, BleepyBloop.InputSize, OutputSize);
-                }
+                VaryAddresses(p, instruction);
                 if (BetterRandom.NextDouble() < p)
                 {
                     calc = Calcuations.GetRandom();
@@ -196,6 +196,22 @@ namespace ClassLibrary2361
                 b.genes[i] = instruction;
             }
             return b.Genes;
+        }
+
+        private static void VaryAddresses(double p, Instruction instruction)
+        {
+            if (BetterRandom.NextDouble() < p)
+            {
+                instruction.InAdrA = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize, OutputSize);
+            }
+            if (BetterRandom.NextDouble() < p)
+            {
+                instruction.HyAdrB = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize, OutputSize);
+            }
+            if (BetterRandom.NextDouble() < p)
+            {
+                instruction.OutAdr = Instruction.RandomAddress(true, false, true, MemSize, BleepyBloop.InputSize, OutputSize);
+            }
         }
 
         public double GetAddr(MemAdr a)
@@ -245,6 +261,7 @@ namespace ClassLibrary2361
             L = new ColourVector();
             R = new ColourVector();
             F = new ColourVector();
+            Line = new ColourVector();
             G = new Instruction[MemSize];
             RandomID = BetterRandom.R.Next(1000 * 1000 * 1000);
         }

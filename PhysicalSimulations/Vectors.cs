@@ -79,6 +79,16 @@ namespace PhysicalSimulations
             return (new Vector2d(a.x - b.x, a.y - b.y));
         }
 
+        public static double DistSquared(Vector2d a,Vector2d b)
+        {
+            return ((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+        }
+
+        public static double AngleTowards(Vector2d a, Vector2d b)
+        {
+            return Math.Atan2(a.y - b.y, a.x - b.x);
+        }
+
         public static Vector2d operator *(double a, Vector2d b)
         {
             return (new Vector2d(a * b.x, a * b.y));

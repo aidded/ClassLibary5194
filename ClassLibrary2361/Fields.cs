@@ -16,7 +16,7 @@ namespace ClassLibrary2361
         public BleepyBloop[] Bloops;
         public BleepyBloop[] PreviousOrderCheck;
 
-        public const int NF = 5000;
+        public const int NF = 2500;
 
         public Field(int NumberOfBloops)
         {
@@ -98,19 +98,25 @@ namespace ClassLibrary2361
             for (int i = 0; i < Bloops.Count(); i++)
             {
                 BleepyBloop h = Bloops[i];
-                Bloops[i].L = new ColourVector();
-                Bloops[i].R = new ColourVector();
-                Bloops[i].F = new ColourVector();
-                physicalLevel.CAP(h.PosSensor(1d, 0.8), Frame, ref Bloops[i].L);
-                physicalLevel.CAP(h.PosSensor(-1d, 0.8), Frame, ref Bloops[i].R);
-                physicalLevel.CAP(h.PosSensor(0, 1.6), Frame, ref Bloops[i].F);
+                if ((Frame % 4) == 0)
+                {
+                    h.L = new ColourVector();
+                    h.R = new ColourVector();
+                    h.F = new ColourVector();
+                    physicalLevel.CAP(h.PosSensor(1d, 0.8), Frame, ref h.L);
+                    physicalLevel.CAP(h.PosSensor(-1d, 0.8), Frame, ref h.R);
+                    physicalLevel.CAP(h.PosSensor(0, 1.6), Frame, ref h.F);
+                }
+                h.Line = new ColourVector();
+                h.Line = physicalLevel.NextColourOnLine(h.pos, Clamper.clamp(h.Outputs[(int)BleepyBloop.OAL.LineAngleOut] * 0.5) - 0.5+h.Rotation,Frame);
                 for (int j = 0; j < 4; j++)
                 {
-                    h.Inputs[j * 3] = Bloops[i].L.CoOrdinates[j];
-                    h.Inputs[j * 3 + 1] = Bloops[i].R.CoOrdinates[j];
-                    h.Inputs[j * 3 + 2] = Bloops[i].F.CoOrdinates[j];
+                    h.Inputs[j * 3] = h.L.CoOrdinates[j];
+                    h.Inputs[j * 3 + 1] = h.R.CoOrdinates[j];
+                    h.Inputs[j * 3 + 2] = h.F.CoOrdinates[j];
+                    h.Inputs[j + 20] = h.Line.CoOrdinates[j];
                 }
-            }
+           }
         }
 
         public void SimulateBrain(int Frame)
@@ -136,10 +142,9 @@ namespace ClassLibrary2361
         public override bool Step()
         {
             //NullCheck(Frame);
-            if ((Frame % 4) == 0)
-            {
+            
                 MoveFromPhyToBrain(Frame);
-            }
+            
             //NullCheck(Frame);
             SimulateBrain(Frame);
             //NullCheck(Frame);
@@ -226,8 +231,8 @@ namespace ClassLibrary2361
                     {
                         if ((localBloop.Position - food.Position).absolute < 1.5)
                         {
-                            localBloop.Food += food.Size;
-                            food.Size = 0;
+                            localBloop.Food += food.Calories;
+                            food.Calories = 0;
                         }
                     }
                 }
@@ -249,9 +254,9 @@ namespace ClassLibrary2361
                     {
                         if ((localBloop.Position - poison.Position).absolute < 1.5)
                         {
-                            localBloop.Food = Math.Max(localBloop.Food - poison.Size, 0);
-                            localBloop.Poison += poison.Size;
-                            poison.Size = 0;
+                            localBloop.Food = Math.Max(localBloop.Food - poison.PoisonSize, 0);
+                            localBloop.Poison += poison.PoisonSize;
+                            poison.PoisonSize = 0;
                         }
                     }
                 }

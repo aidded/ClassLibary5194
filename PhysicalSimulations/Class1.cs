@@ -9,6 +9,7 @@ namespace ClassLibrary2361
     {
         V Position { get; set; }
         ColourVector Colour { get; }
+        double Size { get; }
     }
 
     public abstract class LifeForm

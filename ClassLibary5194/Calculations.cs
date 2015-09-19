@@ -83,7 +83,7 @@ namespace ThinkingClassLibary
             {
                 C = (A - B) / (DiscreteContinous);
             }
-            return C;
+            return Clamper.clamp(C,-1024,1024);
         }
     }
 

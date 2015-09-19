@@ -37,5 +37,13 @@ namespace ClassLibrary2361
         {
             Position = Vector2d.GenerateRandomPosition();
         }
+
+        public double Size
+        {
+            get
+            {
+                return 0.7;
+            }
+        }
     }
 }
