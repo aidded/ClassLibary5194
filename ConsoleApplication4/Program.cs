@@ -53,7 +53,7 @@ namespace Example
                 };
 
                 // Run the game at 60 updates per second
-                game.Run(200, 60);
+                game.Run(60, 60);
             }
         }
 
@@ -61,7 +61,7 @@ namespace Example
         {
             if (Keyboard.GetState().IsKeyDown(Key.F))
             {
-                s = 4;
+                s = 8;
             }
             if (Keyboard.GetState().IsKeyDown(Key.S))
             {

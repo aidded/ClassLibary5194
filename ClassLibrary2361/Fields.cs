@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Xml.Serialization;
 using ThinkingClassLibary;
 
 namespace ClassLibrary2361
@@ -16,7 +14,7 @@ namespace ClassLibrary2361
         public BleepyBloop[] Bloops;
         public BleepyBloop[] PreviousOrderCheck;
 
-        public const int NF = 2500;
+        public const int NF = 25000;
 
         public Field(int NumberOfBloops)
         {
@@ -146,6 +144,13 @@ namespace ClassLibrary2361
                 MoveFromPhyToBrain(Frame);
             
             //NullCheck(Frame);
+            if(Bloops.Any(a => !a.GenesCompiled))
+            {
+                foreach (BleepyBloop B in Bloops)
+                {
+                    B.CompileGenes();
+                }
+            }
             SimulateBrain(Frame);
             //NullCheck(Frame);
             MoveFromBrainToPhy(Frame);

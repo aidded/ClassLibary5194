@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-namespace ThinkingClassLibary
+﻿namespace ThinkingClassLibary
 {
-    public class Instruction
+    public class InstructionBase
     {
-        public MemAdr InAdrA;
-        public MemAdr HyAdrB;
-        public MemAdr OutAdr;
         public TwoCalculation Instuct;
-        
+
+        public InstructionBase()
+        { 
+        }
+
         public object InstructAsItsType
         {
             get
@@ -20,6 +15,13 @@ namespace ThinkingClassLibary
                 return (Instuct);
             }
         }
+    }
+
+    public class Instruction : InstructionBase
+    {
+        public MemAdr InAdrA;
+        public MemAdr HyAdrB;
+        public MemAdr OutAdr;
 
         public Instruction(int MemSize, int InputSize, int OutputSize)
         {
@@ -29,8 +31,8 @@ namespace ThinkingClassLibary
             Instuct = Calcuations.GetRandom();
         }
 
-        public Instruction()
-        { 
+        public Instruction() : base()
+        {
         }
 
         public Instruction(Instruction i)
@@ -103,5 +105,32 @@ namespace ThinkingClassLibary
         }
     }
 
+    public class CompiledInstruction:InstructionBase
+    {
+        public int InAdrA;
+        public int HyAdrB;
+        public int OutAdr;
 
+        public CompiledInstruction(Instruction Instr, int MemSize, int InputSize)
+        {
+            InAdrA = ConvertMemAdrToInt(Instr.InAdrA, MemSize, InputSize);
+            HyAdrB = ConvertMemAdrToInt(Instr.HyAdrB, MemSize, InputSize);
+            OutAdr = ConvertMemAdrToInt(Instr.OutAdr, MemSize, InputSize);
+            Instuct = Instr.Instuct;
+        }
+
+        public int ConvertMemAdrToInt(MemAdr Adr, int MemSize,int InputSize)
+        {
+            int TBR = Adr.P;
+            if (Adr.T == 1)
+            {
+                TBR += MemSize;
+            }
+            else if (Adr.T == 2)
+            {
+                TBR += MemSize + InputSize;
+            }
+            return TBR;
+        }
+    }
 }

@@ -104,17 +104,15 @@ namespace ClassLibrary2361
         {
             for (int i = start; i < end; i++)
             {
+                Bloops[i].FillCompiledMem();
                 SetConstants(i);
-
                 AccessBuffer(i);
-
-                foreach (Instruction I in Bloops[i].Genes)
+                foreach (CompiledInstruction I in Bloops[i].CompiledGenes)
                 {
-                    Bloops[i].SetAddr(I.OutAdr,
-                        I.Instuct.Evaluate(
-                            Bloops[i].GetAddr(I.InAdrA),
-                            Bloops[i].GetAddr(I.HyAdrB)));
+                    Bloops[i].CompiledMem[I.OutAdr] = I.Instuct.Evaluate(Bloops[i].CompiledMem[I.InAdrA],
+                        Bloops[i].CompiledMem[I.HyAdrB]);
                 }
+                Bloops[i].EmptyCompiledMem();
             }
         }
         private void AccessBuffer(int i)

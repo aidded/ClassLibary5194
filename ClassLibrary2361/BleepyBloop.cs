@@ -9,30 +9,21 @@ namespace ClassLibrary2361
     public class BleepyBloop : LifeForm, IPhysical<Vector2d>
     {
         public Vector2d pos;
+
         public double Size
         {
-            get
-            {
-                return 0.7;
-            }
+            get { return 0.7; }
         }
+
         public Vector2d Position
         {
-            get
-            {
-                return pos;
-            }
-            set
-            {
-                pos = value;
-            }
+            get { return pos; }
+            set { pos = value; }
         }
+
         public ColourVector Colour
         {
-            get
-            {
-                return (new ColourVector(0d, 1d, 0d, 0d));
-            }
+            get { return (new ColourVector(0d, 1d, 0d, 0d)); }
         }
 
         public ColourVector L;
@@ -42,60 +33,50 @@ namespace ClassLibrary2361
 
         public override Instruction[] Genes
         {
-            get
-            {
-                return G;
-            }
+            get { return G; }
 
-            set
-            {
-                G = value;
-            }
+            set { G = value; }
         }
 
-        List<Instruction> genes
+        private List<Instruction> genes
         {
-            get
-            {
-                return G.ToList();
-            }
-            set
-            {
-                G = value.ToArray();
-            }
+            get { return G.ToList(); }
+            set { G = value.ToArray(); }
         }
 
         public double Food
         {
-            get
-            {
-                return food;
-            }
+            get { return food; }
 
-            set
-            {
-                food = value;
-            }
+            set { food = value; }
         }
 
         public Instruction[] G;
+        public CompiledInstruction[] CompiledGenes;
+        public int[] a;
+        public int[] b;
+        public int[] o;
+        public TwoCalculation[] c;
+        public bool GenesCompiled = false;
 
         public double Rotation;
+
         public Vector2d PosSensor(double LeftRight, double Forward)
         {
             return (new Vector2d
                 (pos.x +
-                (Forward* Math.Sin(Rotation)) +
-                (0.4 * LeftRight * Math.Cos(Rotation)),
-                pos.y + (Forward * Math.Cos(Rotation)) +
-                (0.4 * LeftRight * Math.Sin(Rotation))));
+                 (Forward*Math.Sin(Rotation)) +
+                 (0.4*LeftRight*Math.Cos(Rotation)),
+                    pos.y + (Forward*Math.Cos(Rotation)) +
+                    (0.4*LeftRight*Math.Sin(Rotation))));
         }
 
         public int RandomID;
 
         public double parentsFood;
-        private double food=15;
+        private double food = 15;
         public double Poison = -1;
+
         public double MoveSpeed
         {
             get
@@ -111,13 +92,15 @@ namespace ClassLibrary2361
             }
         }
 
+        public double[] CompiledMem;
+
         public double[] Inputs;
         public enum IAL : int
         {
             InGreenL = 0,
             InGreenR = 1,
             InGreenF = 2,
-            InOrangeL =3,
+            InOrangeL = 3,
             InOrangeR = 4,
             InOrangeF = 5,
             InGreyL = 6,
@@ -144,7 +127,8 @@ namespace ClassLibrary2361
         public static int MemSize = 750;
         public double[] Outputs;
         public static int OutputSize = 15;
-        public enum OAL:int
+
+        public enum OAL : int
         {
             OutThrustL = 0,
             OutThrustR = 1,
@@ -169,7 +153,7 @@ namespace ClassLibrary2361
 
         public override double ObjectiveFunction()
         {
-            return Food+parentsFood;
+            return Food + parentsFood;
         }
 
         public void Vary(double StdDev, double p)
@@ -180,7 +164,7 @@ namespace ClassLibrary2361
         public Instruction[] ReturnVaried(double StdDev, double p)
         {
             BleepyBloop b = new BleepyBloop();
-            b = (BleepyBloop)this;
+            b = (BleepyBloop) this;
             for (int i = 0; i < genes.Count(); i++)
             {
                 Instruction instruction = new Instruction(genes[i]);
@@ -202,15 +186,18 @@ namespace ClassLibrary2361
         {
             if (BetterRandom.NextDouble() < p)
             {
-                instruction.InAdrA = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize, OutputSize);
+                instruction.InAdrA = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize,
+                    OutputSize);
             }
             if (BetterRandom.NextDouble() < p)
             {
-                instruction.HyAdrB = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize, OutputSize);
+                instruction.HyAdrB = Instruction.RandomAddress(true, true, false, MemSize, BleepyBloop.InputSize,
+                    OutputSize);
             }
             if (BetterRandom.NextDouble() < p)
             {
-                instruction.OutAdr = Instruction.RandomAddress(true, false, true, MemSize, BleepyBloop.InputSize, OutputSize);
+                instruction.OutAdr = Instruction.RandomAddress(true, false, true, MemSize, BleepyBloop.InputSize,
+                    OutputSize);
             }
         }
 
@@ -228,7 +215,7 @@ namespace ClassLibrary2361
 
         public void SetAddr(MemAdr a, double d)
         {
-            if(a.T == 0)
+            if (a.T == 0)
             {
                 Memory[a.P] = d;
             }
@@ -241,15 +228,16 @@ namespace ClassLibrary2361
         public BleepyBloop()
         {
             InitVars();
-            Position = new Vector2d(BetterRandom.NextDouble() * 64, BetterRandom.NextDouble() * 64);
+            Position = new Vector2d(BetterRandom.NextDouble()*64, BetterRandom.NextDouble()*64);
             for (int e = 0; e < MemSize; e++)
             {
-                G[e] = new Instruction(MemSize,InputSize,OutputSize);
+                G[e] = new Instruction(MemSize, InputSize, OutputSize);
             }
         }
 
         private void InitVars()
         {
+            CompiledMem = new double[MemSize+InputSize+OutputSize];
             Memory = new double[MemSize];
             Buffet = new MemoryBuffet[NumMemBuffet];
             for (int i = 0; i < Buffet.Count(); i++)
@@ -263,7 +251,36 @@ namespace ClassLibrary2361
             F = new ColourVector();
             Line = new ColourVector();
             G = new Instruction[MemSize];
-            RandomID = BetterRandom.R.Next(1000 * 1000 * 1000);
+            RandomID = BetterRandom.R.Next(1000*1000*1000);
+        }
+
+        public void FillCompiledMem()
+        {
+            Array.Copy(Inputs,0,CompiledMem,MemSize,InputSize);
+        }
+
+        public void EmptyCompiledMem()
+        {
+            Array.Copy(CompiledMem, MemSize+InputSize, Outputs, 0, OutputSize);
+        }
+
+        public void CompileGenes()
+        {
+            int count = G.Count();
+            CompiledGenes = new CompiledInstruction[count];
+            a = new int[count];
+            b = new int[count];
+            o = new int[count];
+            c = new TwoCalculation[count];
+            for (int i = 0; i < count; i++)
+            {
+                CompiledGenes[i] = new CompiledInstruction(G[i], MemSize, InputSize);
+                a[i] = CompiledGenes[i].InAdrA;
+                b[i] = CompiledGenes[i].HyAdrB;
+                o[i] = CompiledGenes[i].OutAdr;
+                c[i] = CompiledGenes[i].Instuct;
+            }
+            GenesCompiled = true;
         }
     }
 }
